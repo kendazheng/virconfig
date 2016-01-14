@@ -25,6 +25,7 @@ Bundle 'davidhalter/jedi'
 Bundle 'tell-k/vim-autopep8'
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'Lokaltog/vim-powerline'
+Bundle 'hdima/python-syntax'
 
 " ... other plugin
 syntax on
@@ -56,6 +57,8 @@ set expandtab
 set autoindent
 set smartindent
 set pastetoggle=<F9>
+set cursorcolumn
+
 "hi CursorColumn cterm=NONE ctermbg=darkred ctermfg=green guibg=darkred guifg=white
 hi Folded guibg=black guifg=grey40 ctermfg=grey ctermbg=darkgrey
 hi FoldColumn guibg=black guifg=grey20 ctermfg=4 ctermbg=7 
@@ -157,8 +160,8 @@ nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR> " 跳转到�
 autocmd FileType python map <buffer> <F4> :call Autopep8()<CR>
 
 " syntastic 
-" let g:syntastic_error_symbol = '⚠'  "set error or warning signs
-" let g:syntastic_warning_symbol = '⚠'
+let g:syntastic_error_symbol = '✗'  "set error or warning signs
+let g:syntastic_warning_symbol = '⚠'
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_highlighting = 0
 "let g:syntastic_python_checker="flake8,pyflakes,pep8,pylint"
@@ -179,3 +182,42 @@ let g:indent_guides_start_level       = 2  " 从第二层开始可视化显示�
 
 " powerline config
 let g:Powerline_symbols = 'unicode'
+
+" 自动文件头
+function! TitleInsert()
+    call setline(1,"# -*- coding:utf-8 -*-")
+    call append(1,'""""')
+    call append(2,"Program:")
+    call append(3,"Description:")
+    call append(4,"Author: zhenglei - zhenglei@shinezone.com")
+    call append(5,"Date: " . strftime("%Y-%m-%d %H:%M:%S"))
+    call append(6,"Last modified: " . strftime("%Y-%m-%d %H:%M:%S"))
+    call append(7,"Python release: 2.7")
+    call append(8,'"""')
+endfunction
+
+function! DateInsert()
+    call cursor(7,1)
+    if search('Last modified') != 0
+        let line = line('.')
+        call setline(line,"Last modified: " . strftime("%Y-%m-%d %H:%M:%S"))
+    endif
+endfunction
+
+:map <F5> :call TitleInsert()<CR>ggjjA
+:autocmd FileWritePre,BufWritePre *.py ks|call DateInsert()|'s
+
+" python 全高亮
+let python_highlight_all = 1
+
+" 自动运行当前py文件
+au BufRead *.py map <buffer> <F6> :w<CR>:!/usr/bin/env python % <CR>
+
+
+" 映射
+" F2:左侧目录树
+" F3:flake8检测
+" F4:Autopep8
+" F5:文件头插入
+" F6:自动运行python文件
+" F8:右侧变量
