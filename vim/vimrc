@@ -26,6 +26,7 @@ Bundle 'tell-k/vim-autopep8'
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'hdima/python-syntax'
+Bundle 'vim-scripts/DoxygenToolkit.vim'
 
 " ... other plugin
 syntax on
@@ -186,21 +187,22 @@ let g:Powerline_symbols = 'unicode'
 " 自动文件头
 function! TitleInsert()
     call setline(1,"# -*- coding:utf-8 -*-")
-    call append(1,'""""')
-    call append(2,"Program:")
-    call append(3,"Description:")
-    call append(4,"Author: zhenglei - zhenglei@shinezone.com")
-    call append(5,"Date: " . strftime("%Y-%m-%d %H:%M:%S"))
-    call append(6,"Last modified: " . strftime("%Y-%m-%d %H:%M:%S"))
-    call append(7,"Python release: 2.7")
-    call append(8,'"""')
+    call append(1,'# """')
+    call append(2,"# Program:")
+    call append(3,"# Version:")
+    call append(4,"# Description:") 
+    call append(5,"# Author: zhenglei - zhenglei@shinezone.com")
+    call append(6,"# Date: " . strftime("%Y-%m-%d %H:%M:%S"))
+    call append(7,"# Last modified: " . strftime("%Y-%m-%d %H:%M:%S"))
+    call append(8,"# Python release: 2.7")
+    call append(9,'# """')
 endfunction
 
 function! DateInsert()
     call cursor(7,1)
     if search('Last modified') != 0
         let line = line('.')
-        call setline(line,"Last modified: " . strftime("%Y-%m-%d %H:%M:%S"))
+        call setline(line,"# Last modified: " . strftime("%Y-%m-%d %H:%M:%S"))
     endif
 endfunction
 
@@ -212,6 +214,23 @@ let python_highlight_all = 1
 
 " 自动运行当前py文件
 au BufRead *.py map <buffer> <F6> :w<CR>:!/usr/bin/env python % <CR>
+
+"doxygen toolkit 
+let g:DoxygenToolkit_briefTag_pre="@function  "
+let g:DoxygenToolkit_paramTag_pre="@param "
+let g:DoxygenToolkit_returnTag="@returns   "
+let g:DoxygenToolkit_blockHeader='"""' 
+let g:DoxygenToolkit_blockFooter='"""'
+let g:DoxygenToolkit_authorName="zhenglei"
+let g:DoxygenToolkit_licenseTag="GPL 2.0"
+
+let g:DoxygenToolkit_authorName="zhenglei, zhenglei@mail.shinezone.com"
+let s:licenseTag = "Copyright(C)\<enter>"
+let s:licenseTag = s:licenseTag . "For free\<enter>"
+let s:licenseTag = s:licenseTag . "All right reserved\<enter>"
+let g:DoxygenToolkit_licenseTag = s:licenseTag
+let g:DoxygenToolkit_briefTag_funcName="yes"
+let g:doxygen_enhanced_color=1
 
 
 " 映射
